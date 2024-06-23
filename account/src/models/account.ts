@@ -1,75 +1,84 @@
-import { Model, DataTypes, Optional } from 'sequelize';
-import {db} from '../infra/database/database';
-import Customer from './customer';
+import { Sequelize, Model, DataTypes, Optional } from "sequelize"
+import { db } from "../infra/database/database"
+import Customer from "./customer"
 
-// Define the attributes for the Account model
 interface AccountAttributes {
-    id: number;
-    balance: number;
+    id: number
+    balance: number
+    originId: number
 }
 
-// Define the creation attributes for the Account model
-interface AccountCreationAttributes extends Optional<AccountAttributes, 'id'> {}
+interface AccountOptAttributes extends Optional<AccountAttributes, "id">{}
 
-// Define the instance type for the Account model
-interface AccountInstance
-    extends Model<AccountAttributes, AccountCreationAttributes>,
-        AccountAttributes {}
+class AccountModel extends Model<AccountAttributes, AccountOptAttributes> implements AccountAttributes {
+    public id!: number
+    public originId!: number
+    public balance!: number
+    public createAt!: string
+    public updatedAt!: string
+}
 
-const Account = db.define<AccountInstance, AccountCreationAttributes>('account', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    balance: {
-        type: DataTypes.FLOAT,
-        allowNull: true
-    }
-}, {
-    timestamps: true
-});
+const initializeAccount = (sequelize: Sequelize): typeof AccountModel => {
+    return AccountModel.init(
+        {
+            id:{
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            balance: {
+                type: DataTypes.FLOAT
+            },
+            originId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: Customer,
+                    key: 'id'
+                }
+            }
+        },{
+            sequelize,
+            timestamps: true
+        }
+    )
+}
 
-Account.belongsTo(Customer);
 
-export default Account;
-// import { Sequelize, Model, DataTypes, Optional } from "sequelize"
-// import { db } from "../infra/database/database"
-// import Customer from "./customer"
+const Account = initializeAccount(db)
+Account.belongsTo(Customer, { foreignKey: 'originId' });
+
+export default Account
+
+// import { Model, DataTypes, Optional } from 'sequelize';
+// import {db} from '../infra/database/database';
+// import Customer from './customer';
 
 // interface AccountAttributes {
-//     id: number
-//     balance: number
+//     id: number;
+//     balance: number;
 // }
 
-// interface AccountOptAttributes extends Optional<AccountAttributes, "id">{}
+// interface AccountCreationAttributes extends Optional<AccountAttributes, 'id'> {}
 
-// class Account extends Model<AccountAttributes, AccountOptAttributes> implements AccountAttributes {
-//     public id!: number
-//     public balance!: number
-//     public createAt!: string
-//     public updatedAt!: string
-// }
+// interface AccountInstance
+//     extends Model<AccountAttributes, AccountCreationAttributes>,
+//         AccountAttributes {}
 
-// const initializeAccount = (sequelize: Sequelize): typeof Account => {
-//     return Account.init(
-//         {
-//             id:{
-//                 type: DataTypes.INTEGER,
-//                 primaryKey: true,
-//                 autoIncrement: true
-//             },
-//             balance: {
-//                 type: DataTypes.FLOAT
-//             }
-//         },{
-//             sequelize,
-//             timestamps: true
-//         }
-//     )
-// }
+// const Account = db.define<AccountInstance, AccountCreationAttributes>('account', {
+//     id: {
+//         type: DataTypes.INTEGER,
+//         primaryKey: true,
+//         autoIncrement: true
+//     },
+//     balance: {
+//         type: DataTypes.FLOAT,
+//         allowNull: true
+//     }
+// }, {
+//     timestamps: true
+// });
 
-// Account.belongsTo(Customer)
+// Account.belongsTo(Customer);
 
-// initializeAccount(db)
-// export default Account
+// export default Account;

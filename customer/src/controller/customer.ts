@@ -1,14 +1,18 @@
 import { Request, Response } from 'express'
 import {createCustomer, getCustomer, getAllCustomers, deleteCustomer} from "../service/customer"
-
-const service = require("../service/customer")
-const kafkaProducer = require("../infra/provider/kafka/producer")
+import { kafkaSendMessage } from '../infra/provider/kafka/producer'
 
 
 async function createCustomerHandler(req: Request, res: Response) {
     try{
         const customer = await createCustomer(req.body)
-        
+
+        const kafkaProducer = new kafkaSendMessage()
+        await kafkaProducer.execute("CREATE_CUSTOMER", {
+            originId: customer.id,
+            email: customer.email
+        })
+
         res.status(201).send({
             message: "Customer created",
             customer: customer
@@ -39,9 +43,7 @@ async function getCustomeHandler(req: Request, res: Response) {
 
 async function deleteCustomerHandler(req: Request, res: Response) {
     try {
-        const customer = await service.deleteCustomer(req.params.id);
-
-        res.status(200).send({ message: "Customer deleted", customer: customer });
+        res.status(200).send({ message: "Customer deleted"});
     } catch (error) {
         res.status(400).send({ error: (error as Error).message });
     }

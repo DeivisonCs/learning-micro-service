@@ -1,5 +1,4 @@
-const Kafka = require("kafkajs").Kafka
-const logLevel = require("kafkajs").logLevel
+import { Kafka, logLevel } from 'kafkajs';
 
 const kafka = new Kafka({
   brokers: ['splendid-guinea-5644-us1-kafka.upstash.io:9092'],
@@ -12,4 +11,4 @@ const kafka = new Kafka({
   logLevel: logLevel.ERROR,
 });
 
-module.exports = kafka
+export {kafka}

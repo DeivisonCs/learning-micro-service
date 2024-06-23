@@ -4,6 +4,7 @@ import { db } from '../infra/database/database'
 interface CustomerAttributes{
     id: number
     name: string
+    email: string
 }
 
 interface CustomerCreationAttributes extends Optional<CustomerAttributes, 'id'> {}
@@ -11,6 +12,7 @@ interface CustomerCreationAttributes extends Optional<CustomerAttributes, 'id'> 
 class Customer extends Model<CustomerAttributes, CustomerCreationAttributes > implements CustomerAttributes {
     public id!: number
     public name!: string
+    public email!: string
     public createdAt!: string
     public updatedAt!: string
 }
@@ -27,10 +29,13 @@ const initializeCustomer = (sequelize: Sequelize): typeof Customer => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
         },
         {
             sequelize,
-            tableName: "customers",
             modelName: "Customer",
             timestamps: true,
         }

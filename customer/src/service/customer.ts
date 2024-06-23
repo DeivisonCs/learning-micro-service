@@ -2,6 +2,7 @@ import DB_Customer from "../models/customer"
 
 interface CustomerAttributes {
     name: string;
+    email: string;
 }
 
 async function createCustomer(datas: CustomerAttributes): Promise<DB_Customer> {

@@ -4,7 +4,6 @@ import {createAccountHandler, deleteAccountHandler, getAccountsHandler} from "..
 const router = express.Router()
 
 router.get("/", getAccountsHandler)
-router.post("/", createAccountHandler)
 router.delete("/", deleteAccountHandler)
 
 export default router

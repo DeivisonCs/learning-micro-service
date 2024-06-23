@@ -1,18 +1,23 @@
 import DB_Account from "../models/account"
 
-interface accountAtributes {
+interface AccountAttributes {
+    id: number
+    originId: number
     balance: number
+    createAt: string
+    updatedAt: string
 }
 
-async function createAccount(datas: accountAtributes): Promise<accountAtributes> {
-    return await DB_Account.create(datas)
+
+async function createAccount(originId: number): Promise<AccountAttributes> {
+    return await DB_Account.create({originId:originId, balance:0.0})
 }
 
-async function getAllAccounts() : Promise<accountAtributes[] | null> {
+async function getAllAccounts() : Promise<AccountAttributes[] | null> {
     return await DB_Account.findAll()
 }
 
-async function getAccount(id:string) : Promise<accountAtributes | null> {
+async function getAccount(id:string) : Promise<AccountAttributes | null> {
     return await DB_Account.findByPk(id)
 }
 
