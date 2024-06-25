@@ -62,6 +62,8 @@ async function getTransactionDetails(transaction: Transaction): Promise<Transact
 
     const transactionDetails: TransactionDetails = {
         ...transaction,
+        id: transaction.id,
+        amount: transaction.amount,
         fromName: fromCustomer!.name,
         fromEmail: fromCustomer!.email,
         fromAddress: fromCustomer!.address,
