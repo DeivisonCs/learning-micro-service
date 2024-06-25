@@ -7,7 +7,7 @@ interface Customer {
 
 export async function deleteCustomerConsumer() {
     console.log("CUSTOMER DELETE CONSUMER IS RUNNING")
-    const consumer = await kafkaConsumer("CUSTOMER_DELETED")
+    const consumer = await kafkaConsumer("CUSTOMER_DELETED", "ACCOUNT_CREATE_APP")
 
     await consumer.run({
         eachMessage: async ({message}) => {

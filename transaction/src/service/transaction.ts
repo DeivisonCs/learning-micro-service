@@ -1,8 +1,7 @@
 import DB_Transaction from "../models/transaction"
-import {Transaction} from "../controller/transaction"
+import {TransactionDetails} from "../controller/transaction"
 
-
-async function createTransaction(data: Transaction): Promise<DB_Transaction> {
+async function createTransaction(data: TransactionDetails): Promise<DB_Transaction> {
     return DB_Transaction.create(data)
 }
 

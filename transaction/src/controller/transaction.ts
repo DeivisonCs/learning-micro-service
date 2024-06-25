@@ -2,20 +2,24 @@ import { Request, Response } from 'express'
 import { createTransaction, getAllTransactions, getTransaction } from "../service/transaction"; 
 import { getCustomer } from '../service/customer';
 
-interface Transaction {
+interface Transaction{
+    id: number
     fromId: number
     toId: number
     amount: number
-    fromName?: string
-    fromEmail?: string
-    fromAddress?: string
-    toName?: string
-    toEmail?: string
-    toAddress?: string
+}
+
+interface TransactionDetails extends Transaction{
+    fromName: string
+    fromEmail: string
+    fromAddress: string
+    toName: string
+    toEmail: string
+    toAddress: string
 }
 
 
-async function createTransactionHandler(data: Transaction) {
+async function createTransactionHandler(data: TransactionDetails) {
     try{
         const transaction = await createTransaction(data)
     }
@@ -33,12 +37,16 @@ async function getTransactionHandler(req: Request, res: Response) {
         if(id){
             transactions = await getTransaction(id)
         
-            if(transactions) getTransactionDetails(transactions)
+            if(transactions) transactions = await getTransactionDetails(transactions)
+            transactions = filterTransactionData(transactions)
         }
         else {
             transactions = await getAllTransactions()
 
-            transactions.forEach((transaction: Transaction) => getTransactionDetails(transaction));
+            transactions = await Promise.all(transactions.map(async (transaction: Transaction) => {
+                const detailedTransaction = await getTransactionDetails(transaction);
+                return filterTransactionData(detailedTransaction);
+            }))
         }
 
         res.status(200).send({transaction: transactions})
@@ -48,18 +56,27 @@ async function getTransactionHandler(req: Request, res: Response) {
     }
 }
 
-async function getTransactionDetails(transaction: Transaction) {
+async function getTransactionDetails(transaction: Transaction): Promise<TransactionDetails> {
     const fromCustomer = await getCustomer(transaction.fromId)
     const toCustomer = await getCustomer(transaction.toId)
 
-    if(fromCustomer && toCustomer){
-        transaction.fromName = fromCustomer.name
-        transaction.fromAddress = fromCustomer.address
-        transaction.fromEmail = fromCustomer.email
-        transaction.toName = toCustomer.name
-        transaction.toAddress = toCustomer.address
-        transaction.toEmail = toCustomer.email
+    const transactionDetails: TransactionDetails = {
+        ...transaction,
+        fromName: fromCustomer!.name,
+        fromEmail: fromCustomer!.email,
+        fromAddress: fromCustomer!.address,
+        toName: toCustomer!.name,
+        toEmail: toCustomer!.email,
+        toAddress: toCustomer!.address
     }
+    
+
+    return transactionDetails
 }
 
-export {Transaction, createTransactionHandler, getTransactionHandler}
+function filterTransactionData(transaction: any):  Omit<TransactionDetails, 'fromId' | 'toId'> {
+    const { id, amount, fromName, fromEmail, fromAddress, toName, toEmail, toAddress } = transaction;
+    return { id, amount, fromName, fromEmail, fromAddress, toName, toEmail, toAddress };
+}
+
+export {TransactionDetails, createTransactionHandler, getTransactionHandler}
