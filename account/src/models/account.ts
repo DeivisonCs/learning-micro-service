@@ -4,16 +4,16 @@ import Customer from "./customer"
 
 interface AccountAttributes {
     id: number
-    balance: number
-    originId: number
+    amount: number
+    customerId: number
 }
 
 interface AccountOptAttributes extends Optional<AccountAttributes, "id">{}
 
 class AccountModel extends Model<AccountAttributes, AccountOptAttributes> implements AccountAttributes {
     public id!: number
-    public originId!: number
-    public balance!: number
+    public customerId!: number
+    public amount!: number
     public createAt!: string
     public updatedAt!: string
 }
@@ -26,10 +26,10 @@ const initializeAccount = (sequelize: Sequelize): typeof AccountModel => {
                 primaryKey: true,
                 autoIncrement: true
             },
-            balance: {
+            amount: {
                 type: DataTypes.FLOAT
             },
-            originId: {
+            customerId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
@@ -46,7 +46,7 @@ const initializeAccount = (sequelize: Sequelize): typeof AccountModel => {
 
 
 const Account = initializeAccount(db)
-Account.belongsTo(Customer, { foreignKey: 'originId' });
+Account.belongsTo(Customer, { foreignKey: 'customerId' });
 
 export default Account
 

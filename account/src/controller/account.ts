@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import {createAccount, getAllAccounts, getAccount, deleteAccount} from "../service/account"
+import {createAccount, getAllAccounts, getAccount, deleteAccount, updateAmountAccount} from "../service/account"
 
 
 async function createAccountHandler (originId: number) {
@@ -40,4 +40,31 @@ async function deleteAccountHandler(req: Request, res: Response) {
     }
 }
 
-export {createAccountHandler, getAccountsHandler, deleteAccountHandler}
+async function updateAmountHandler(id: string, amount: number, operation: string): Promise<string> {
+    
+    const account = await getAccount(id)
+
+    if(account === null) return "Account not found"
+
+    if(operation === "DEPOSIT"){
+        if(account.amount - amount < 0.0 ) return "Amount not enough"
+        else{
+            account.amount -= amount
+            await updateAmountAccount(account.id, account.amount)
+
+            return "Amount deposited"
+        }
+    }
+    
+    if(operation === "RECIEVE"){
+        account.amount += amount
+        await updateAmountAccount(account.id, account.amount)
+
+        return "Amount received"
+    }
+
+    return `Error to ${operation}`
+    
+}
+
+export {createAccountHandler, getAccountsHandler, deleteAccountHandler, updateAmountHandler}

@@ -5,6 +5,7 @@ interface CustomerAttributes{
     id: number
     name: string
     email: string
+    address: string
 }
 
 interface CustomerCreationAttributes extends Optional<CustomerAttributes, 'id'> {}
@@ -13,6 +14,7 @@ class Customer extends Model<CustomerAttributes, CustomerCreationAttributes > im
     public id!: number
     public name!: string
     public email!: string
+    public address!: string
     public createdAt!: string
     public updatedAt!: string
 }
@@ -30,6 +32,10 @@ const initializeCustomer = (sequelize: Sequelize): typeof Customer => {
                 allowNull: false,
             },
             email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            address: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },

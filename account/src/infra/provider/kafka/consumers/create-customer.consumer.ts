@@ -8,8 +8,8 @@ interface Customer {
 }
 
 export async function createCustomerConsumer() {
-    console.log("CUSTOMER CONSUMER RUNNING")
-    const consumer = await kafkaConsumer("CREATE_CUSTOMER")
+    console.log("CUSTOMER CREATE CONSUMER IS RUNNING")
+    const consumer = await kafkaConsumer("CUSTOMER_CREATED")
 
     await consumer.run({
         eachMessage: async ({message}) => {

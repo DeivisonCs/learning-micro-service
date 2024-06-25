@@ -8,7 +8,7 @@ async function createCustomerHandler(req: Request, res: Response) {
         const customer = await createCustomer(req.body)
 
         const kafkaProducer = new kafkaSendMessage()
-        await kafkaProducer.execute("CREATE_CUSTOMER", {
+        await kafkaProducer.execute("CUSTOMER_CREATED", {
             originId: customer.id,
             email: customer.email
         })
@@ -21,7 +21,7 @@ async function createCustomerHandler(req: Request, res: Response) {
     catch (error) {
         res.status(400).send({
             message: "Create customer failed",
-            error: (error as Error).message
+            error: error
         });
     }
 }
@@ -37,15 +37,24 @@ async function getCustomeHandler(req: Request, res: Response) {
 
         res.status(200).send({ customer: customer });
     } catch (error) {
-        res.status(400).send({ error: (error as Error).message });
+        res.status(400).send({ error: error });
     }
 }
 
 async function deleteCustomerHandler(req: Request, res: Response) {
     try {
+        const customer = await deleteCustomer(req.params.id)
+
+        if(customer){
+            const kafkaProducer = new kafkaSendMessage()
+            await kafkaProducer.execute("CUSTOMER_DELETED", {
+                originId: customer.id
+            })
+        }
+
         res.status(200).send({ message: "Customer deleted"});
     } catch (error) {
-        res.status(400).send({ error: (error as Error).message });
+        res.status(400).send({ error: error });
     }
 }
 

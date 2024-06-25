@@ -1,14 +1,14 @@
 import { Kafka, logLevel } from 'kafkajs';
 
 const kafka = new Kafka({
-  brokers: ['splendid-guinea-5644-us1-kafka.upstash.io:9092'],
+  brokers: ['right-leopard-8896-us1-kafka.upstash.io:9092'],
   ssl: true,
   sasl: {
       mechanism: 'scram-sha-256',
-      username: 'c3BsZW5kaWQtZ3VpbmVhLTU2NDQkfmi4ZvK7SHFSloTPNKatQ7ynY0_V6QDCLhE',
-      password: 'M2RmYmQ5OWEtMWRhYi00YmFhLWFjOWMtYmViMDU2NzQ2Njcy'
+      username: 'cmlnaHQtbGVvcGFyZC04ODk2JPvqA-vf4rg41UH0OQMaupbwtFxAiPrxloKl3xA',
+      password: 'OTBjZDAzNWItNjc0ZS00M2M5LTlmMTAtZDQ0MDQ3ZGYyZjE5'
   },
-  logLevel: logLevel.ERROR,
+  logLevel: logLevel.ERROR
 });
 
 export {kafka}

@@ -1,0 +1,1 @@
+import "./get-transfer-log.consumer"

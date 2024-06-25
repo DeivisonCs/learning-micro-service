@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get("/", getCustomeHandler)
 router.post("/", createCustomerHandler)
-router.delete("/", deleteCustomerHandler)
+router.delete("/:id", deleteCustomerHandler)
 
 
 export default router

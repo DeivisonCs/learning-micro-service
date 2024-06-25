@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
 import express from "express";
 import customerRouter from "./routes/customer"
+import "./infra/provider/kafka/consumers"
 
 dotenv.config({ path: '.env' })
 
