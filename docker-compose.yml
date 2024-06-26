@@ -22,7 +22,7 @@ services:
     image: account:1.0
     container_name: account_ms 
     ports:
-      - "3001:3000"
+      - "3001:3001"
     environment:
       - DB_HOST=db
       - DB_NAME=ms_account
@@ -39,7 +39,7 @@ services:
     image: transaction:1.0
     container_name: transaction_ms 
     ports:
-      - "3002:3000"
+      - "3002:3002"
     environment:
       - DB_HOST=db
       - DB_NAME=ms_transaction
