@@ -1,0 +1,73 @@
+services:
+  customer_service:
+    build:
+      context: ./customer
+    image: customer:1.0
+    container_name: Customer_ms 
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ms_customer
+      - DB_USER=postgres
+      - DB_PASSWORD=MyDbPassword
+      - DB_DIALECT=postgres
+      - PORT=3000
+    networks:
+      - learn-micro-service-net
+
+  account_service:
+    build:
+        context: ./account
+    image: account:1.0
+    container_name: account_ms 
+    ports:
+      - "3001:3000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ms_account
+      - DB_USER=postgres
+      - DB_PASSWORD=MyDbPassword
+      - DB_DIALECT=postgres
+      - PORT=3001
+    networks:
+      - learn-micro-service-net
+
+  transaction_service:
+    build:
+        context: ./transaction
+    image: transaction:1.0
+    container_name: transaction_ms 
+    ports:
+      - "3002:3000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=ms_transaction
+      - DB_USER=postgres
+      - DB_PASSWORD=MyDbPassword
+      - DB_DIALECT=postgres
+      - PORT=3002
+    networks:
+      - learn-micro-service-net
+
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    container_name: LearnMicroService_DB
+    environment:
+      - POSTGRES_PASSWORD=MyDbPassword
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - db-datas-learnMicroServicec:/var/lib/postgresql/data
+    networks:
+      - learn-micro-service-net
+
+volumes:
+  db-datas-learnMicroServicec:
+
+networks:
+  learn-micro-service-net:
+    driver: bridge
