@@ -1,12 +1,15 @@
+import * as dotenv from 'dotenv'
 import { Kafka, logLevel } from 'kafkajs';
 
+dotenv.config({path: '.env'})
+
 const kafka = new Kafka({
-  brokers: ['right-leopard-8896-us1-kafka.upstash.io:9092'],
+  brokers: [process.env.KAFKA_BROKER!],
   ssl: true,
   sasl: {
       mechanism: 'scram-sha-256',
-      username: 'cmlnaHQtbGVvcGFyZC04ODk2JPvqA-vf4rg41UH0OQMaupbwtFxAiPrxloKl3xA',
-      password: 'OTBjZDAzNWItNjc0ZS00M2M5LTlmMTAtZDQ0MDQ3ZGYyZjE5'
+      username: process.env.KAFKA_USER!,
+      password: process.env.KAFKA_PASSWORD!
   },
   logLevel: logLevel.ERROR
 });
